@@ -1,0 +1,91 @@
+version: '3'
+
+# This docker-compose is for developer convenience, not for running in production.
+
+services:
+
+  spark-master:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spark-master
+    ports:
+      - "8090:8090"
+    environment:
+      - SPARK_MODE=master
+      - SPARK_MASTER_WEBUI_PORT=8090
+      - MAX_EXECUTORS=4
+      - POSTGRES_USER=hive
+      - POSTGRES_PASSWORD=hivepassword
+      - POSTGRES_DB=hive
+      - POSTGRES_URL=postgres:5432
+
+  spark-worker-1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spark-worker-1
+    depends_on:
+      - spark-master
+    ports:
+      - "8081:8081"
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_WEBUI_PORT=8081
+      - POSTGRES_USER=hive
+      - POSTGRES_PASSWORD=hivepassword
+      - POSTGRES_DB=hive
+      - POSTGRES_URL=postgres:5432
+
+  spark-worker-2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spark-worker-2
+    depends_on:
+      - spark-master
+    ports:
+      - "8082:8082"
+    environment:
+      - SPARK_MODE=worker
+      - SPARK_MASTER_URL=spark://spark-master:7077
+      - SPARK_WORKER_CORES=2
+      - SPARK_WORKER_MEMORY=1G
+      - SPARK_WORKER_WEBUI_PORT=8082
+      - POSTGRES_USER=hive
+      - POSTGRES_PASSWORD=hivepassword
+      - POSTGRES_DB=hive
+      - POSTGRES_URL=postgres:5432
+
+  spark-user:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: spark-user
+    environment:
+      - SPARK_MASTER_URL=spark://spark-master:7077
+    command: /bin/bash -c "tail -f /dev/null"
+    depends_on:
+      - spark-master
+
+  postgres:
+    image: postgres:16.3
+    restart: always
+    container_name: postgres
+    # To avoid incorrect user permissions, manually create the volume directory before running Docker.
+    # export UID=$(id -u)
+    # export GID=$(id -g)
+    # mkdir -p cdr/cdm/jupyter/cdm-postgres
+    # reference: https://forums.docker.com/t/systemd-coredump-taking-ownership-of-tmp-db-directory-and-contents-in-rails-app/93609
+    user: "${UID}:${GID}"
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=hive
+      - POSTGRES_PASSWORD=hivepassword
+      - POSTGRES_DB=hive
+    volumes:
+      - ./cdr/cdm/jupyter/cdm-postgres:/var/lib/postgresql/data  # For local development only. In Rancher development, PostgreSQL data shouldn't be stored in a shared mount.

@@ -11,11 +11,6 @@ USER root
 # https://github.com/bitnami/containers/pull/52661
 RUN groupadd -r spark && useradd -r -g spark spark_user
 
-#RUN apt-get update && apt-get install -y \
-#    # GCC required to resolve error during JupyterLab installation: psutil could not be installed from sources because gcc is not installed.
-#    gcc curl git graphviz graphviz-dev libgdal-dev build-essential python3-dev\
-#    && rm -rf /var/lib/apt/lists/*
-
 ENV HADOOP_AWS_VER=3.3.4
 # NOTE: ensure Delta Spark jar version matches python pip delta-spark version specified in the Pipfile
 ENV DELTA_SPARK_VER=3.2.0
@@ -38,9 +33,6 @@ RUN pipenv sync --system
 
 RUN chown -R spark_user:spark /opt/bitnami
 
-COPY ./src/ /src
-ENV PYTHONPATH "${PYTHONPATH}:/src"
-
 COPY ./scripts/ /opt/scripts/
 RUN chmod a+x /opt/scripts/*.sh
 
@@ -48,7 +40,7 @@ RUN chmod a+x /opt/scripts/*.sh
 COPY ./config/ /opt/config/
 
 # Don't just do /opt since we already did bitnami
-RUN chown -R spark_user:spark /src /opt/scripts /opt/config
+RUN chown -R spark_user:spark /opt/scripts /opt/config
 
 # Switch back to non-root user
 USER spark_user

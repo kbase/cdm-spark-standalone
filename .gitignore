@@ -7,3 +7,15 @@ __pycache__
 deploy.cfg
 .coverage
 test/test_temp/
+
+
+cdr/cdm/jupyter/
+# Ignore Gradle project-specific cache directory
+.gradle
+
+# Ignore Gradle build output directory
+build
+/.project
+/.pydevproject*
+/.pytest_cache/
+/.settings/

@@ -11,6 +11,11 @@ USER root
 # https://github.com/bitnami/containers/pull/52661
 RUN groupadd -r spark && useradd -r -g spark spark_user
 
+RUN apt-get update && apt-get install -y \
+    # tools for troubleshooting network issues
+    iputils-ping dnsutils netcat-openbsd \
+    && rm -rf /var/lib/apt/lists/*
+
 ENV HADOOP_AWS_VER=3.3.4
 # NOTE: ensure Delta Spark jar version matches python pip delta-spark version specified in the Pipfile
 ENV DELTA_SPARK_VER=3.2.0

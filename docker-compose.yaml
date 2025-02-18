@@ -8,7 +8,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: spark-master
     ports:
       - "8090:8090"
     environment:
@@ -24,7 +23,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: spark-worker-1
     depends_on:
       - spark-master
     ports:
@@ -44,7 +42,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: spark-worker-2
     depends_on:
       - spark-master
     ports:
@@ -64,7 +61,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: spark-user
     environment:
       - SPARK_MASTER_URL=spark://spark-master:7077
     command: /bin/bash -c "tail -f /dev/null"
@@ -74,7 +70,6 @@ services:
   postgres:
     image: postgres:16.3
     restart: always
-    container_name: postgres
     # To avoid incorrect user permissions, manually create the volume directory before running Docker.
     # export UID=$(id -u)
     # export GID=$(id -g)

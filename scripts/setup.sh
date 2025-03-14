@@ -35,7 +35,7 @@ fi
 
     # Executor idle timeouts for scaling down
     echo "spark.dynamicAllocation.executorIdleTimeout 300s"
-    echo "spark.dynamicAllocation.cachedExecutorIdleTimeout 600s"
+    echo "spark.dynamicAllocation.cachedExecutorIdleTimeout 1800s"
 
     # Decommissioning
     echo "spark.decommission.enabled true"

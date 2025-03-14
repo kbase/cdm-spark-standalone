@@ -14,6 +14,8 @@ services:
       - SPARK_MODE=master
       - SPARK_MASTER_WEBUI_PORT=8090
       - MAX_EXECUTORS=4
+      - EXECUTOR_CORES=2
+      - MAX_CORES_PER_APPLICATION=10
       - POSTGRES_USER=hive
       - POSTGRES_PASSWORD=hivepassword
       - POSTGRES_DB=hive

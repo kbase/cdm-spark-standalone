@@ -10,15 +10,42 @@ if [ -z "$SPARK_CONF_FILE" ]; then
 fi
 
 # Set Spark configurations
+
+# Set default values if not provided by the environment
+: "${MAX_EXECUTORS:=5}"              # Default dynamic allocation executors to 5 if not set
+: "${EXECUTOR_CORES:=2}"             # Default executor cores to 2 if not set
+: "${MAX_CORES_PER_APPLICATION:=10}" # Default maximum cores per application to 10 if not set
+
 {
+    # For detailed explanations and definitions of configuration options,
+    # please refer to the official Spark documentation:
+    # https://spark.apache.org/docs/latest/configuration.html
+
     # Set dynamic allocation configurations to allow parallel job executions
-    if [ -z "$MAX_EXECUTORS" ]; then
-      # If MAX_EXECUTORS is not set, default to 5. Adjust as needed.
-      MAX_EXECUTORS=5
-    fi
     echo "spark.dynamicAllocation.enabled true"
+    echo "spark.dynamicAllocation.shuffleTracking.enabled true"
     echo "spark.dynamicAllocation.minExecutors 1"
+    echo "spark.dynamicAllocation.initialExecutors 1"
     echo "spark.dynamicAllocation.maxExecutors $MAX_EXECUTORS"
+    echo "spark.executor.cores $EXECUTOR_CORES"
+
+    # Backlog timeouts for scaling up
+    echo "spark.dynamicAllocation.schedulerBacklogTimeout 1s"            # Fast initial scale-up
+    echo "spark.dynamicAllocation.sustainedSchedulerBacklogTimeout 10s"  # Conservative follow-up
+
+    # Executor idle timeouts for scaling down
+    echo "spark.dynamicAllocation.executorIdleTimeout 300s"
+    echo "spark.dynamicAllocation.cachedExecutorIdleTimeout 600s"
+
+    # Decommissioning
+    echo "spark.decommission.enabled true"
+    echo "spark.storage.decommission.rddBlocks.enabled true"
+
+    # Fair scheduling - within the same application
+    echo "spark.scheduler.mode FAIR"
+
+    # Set maximum cores configuration for an application
+    echo "spark.cores.max ${MAX_CORES_PER_APPLICATION}"
 
     # Set spark.driver.host if SPARK_DRIVER_HOST is set
     if [ -n "$SPARK_DRIVER_HOST" ]; then

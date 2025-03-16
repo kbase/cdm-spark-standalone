@@ -11,7 +11,7 @@ USER root
 # https://github.com/bitnami/containers/pull/52661
 RUN groupadd -r spark && useradd -r -g spark spark_user
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     # tools for troubleshooting network issues
     iputils-ping dnsutils netcat-openbsd \
     && rm -rf /var/lib/apt/lists/*
@@ -26,15 +26,16 @@ ENV POSTGRES_JDBC_VER=42.2.23
 COPY build.gradle settings.gradle gradlew /gradle/
 COPY gradle /gradle/gradle
 ENV GRADLE_JARS_DIR=gradle_jars
-RUN /gradle/gradlew -p /gradle build
-RUN cp -r /gradle/${GRADLE_JARS_DIR}/* /opt/bitnami/spark/jars/
+RUN /gradle/gradlew -p /gradle build && \
+    cp -r /gradle/${GRADLE_JARS_DIR}/* /opt/bitnami/spark/jars/ && \
+    rm -rf /gradle
 
 # install pipenv
 RUN pip3 install pipenv
 
 # install python dependencies
 COPY Pipfile* ./
-RUN pipenv sync --system
+RUN pipenv sync --system && pip cache purge
 
 RUN chown -R spark_user:spark /opt/bitnami
 

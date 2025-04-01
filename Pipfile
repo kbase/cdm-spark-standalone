@@ -9,7 +9,7 @@ pyspark= "==3.5.4"
 [dev-packages]
 pytest = "==8.3.4"
 coverage = "==7.6.10"
-pytest-cov = "==6.0.0"
+pytest-cov = "==6.1.0"
 ipython = "==8.31.0"
 
 [requires]

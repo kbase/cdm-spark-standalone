@@ -9,7 +9,8 @@ USER root
 # References:
 # https://github.com/bitnami/containers/issues/52698
 # https://github.com/bitnami/containers/pull/52661
-RUN groupadd -r spark && useradd -r -g spark spark_user
+# Uses an existing UID that owns the /opt/bitnami/spark files to avoid a chown
+RUN groupadd -r spark && useradd -u 1001 -r -g spark spark_user
 
 RUN apt-get update && apt-get install -y \
     # tools for troubleshooting network issues
@@ -35,15 +36,12 @@ RUN pip3 install --no-cache-dir pipenv
 COPY Pipfile* ./
 RUN pipenv sync --system && pipenv --clear
 
-RUN chown -R spark_user:spark /opt/bitnami
-
 COPY ./scripts/ /opt/scripts/
 RUN chmod a+x /opt/scripts/*.sh
 
 # Copy the configuration files
 COPY ./config/ /opt/config/
 
-# Don't just do /opt since we already did bitnami
 RUN chown -R spark_user:spark /opt/scripts /opt/config
 
 # Switch back to non-root user

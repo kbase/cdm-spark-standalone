@@ -8,6 +8,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    platform: linux/amd64
     ports:
       - "8090:8090"
     environment:
@@ -20,11 +21,13 @@ services:
       - POSTGRES_PASSWORD=hivepassword
       - POSTGRES_DB=hive
       - POSTGRES_URL=postgres:5432
+      - DATANUCLEUS_AUTO_CREATE_TABLES=true
 
   spark-worker-1:
     build:
       context: .
       dockerfile: Dockerfile
+    platform: linux/amd64
     depends_on:
       - spark-master
     ports:
@@ -39,11 +42,13 @@ services:
       - POSTGRES_PASSWORD=hivepassword
       - POSTGRES_DB=hive
       - POSTGRES_URL=postgres:5432
+      - DATANUCLEUS_AUTO_CREATE_TABLES=true
 
   spark-worker-2:
     build:
       context: .
       dockerfile: Dockerfile
+    platform: linux/amd64
     depends_on:
       - spark-master
     ports:
@@ -58,11 +63,13 @@ services:
       - POSTGRES_PASSWORD=hivepassword
       - POSTGRES_DB=hive
       - POSTGRES_URL=postgres:5432
+      - DATANUCLEUS_AUTO_CREATE_TABLES=true
 
   spark-user:
     build:
       context: .
       dockerfile: Dockerfile
+    platform: linux/amd64
     environment:
       - SPARK_MASTER_URL=spark://spark-master:7077
     command: /bin/bash -c "tail -f /dev/null"

@@ -15,7 +15,7 @@ fi
 : "${MAX_EXECUTORS:=5}"              # Default dynamic allocation executors to 5 if not set
 : "${EXECUTOR_CORES:=2}"             # Default executor cores to 2 if not set
 : "${MAX_CORES_PER_APPLICATION:=10}" # Default maximum cores per application to 10 if not set
-: "${DATANUCLEUS_AUTO_CREATE_TABLES:=false}" # Default DataNucleus auto create tables to false if not set
+: "${DATANUCLEUS_AUTO_CREATE_TABLES:=true}" # Default DataNucleus auto create tables to true if not set
 
 {
     # For detailed explanations and definitions of configuration options,

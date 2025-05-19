@@ -9,6 +9,16 @@ if [ -z "$SPARK_CONF_FILE" ]; then
     exit 1
 fi
 
+# Redis configuration (optional)
+# Set default values if not provided
+: "${REDIS_HOST:=}"
+: "${REDIS_PORT:=}"
+
+# Warn if Redis is not configured but will continue execution
+if [ -z "$REDIS_HOST" ] || [ -z "$REDIS_PORT" ]; then
+    echo "Warning: Redis not configured (REDIS_HOST or REDIS_PORT not set). Redis caching will be disabled." >&2
+fi
+
 # Set Spark configurations
 
 # Set default values if not provided by the environment
@@ -51,6 +61,12 @@ fi
     # Set spark.driver.host if SPARK_DRIVER_HOST is set
     if [ -n "$SPARK_DRIVER_HOST" ]; then
         echo "spark.driver.host $SPARK_DRIVER_HOST"
+    fi
+    
+    # Redis configuration for caching (if enabled)
+    if [ -n "$REDIS_HOST" ] && [ -n "$REDIS_PORT" ]; then
+        echo "spark.redis.host ${REDIS_HOST}"
+        echo "spark.redis.port ${REDIS_PORT}"
     fi
 } >> "$SPARK_CONF_FILE"
 

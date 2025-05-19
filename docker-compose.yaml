@@ -22,6 +22,8 @@ services:
       - POSTGRES_DB=hive
       - POSTGRES_URL=postgres:5432
       - DATANUCLEUS_AUTO_CREATE_TABLES=true
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
   spark-worker-1:
     build:
@@ -43,6 +45,8 @@ services:
       - POSTGRES_DB=hive
       - POSTGRES_URL=postgres:5432
       - DATANUCLEUS_AUTO_CREATE_TABLES=true
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
   spark-worker-2:
     build:
@@ -64,6 +68,8 @@ services:
       - POSTGRES_DB=hive
       - POSTGRES_URL=postgres:5432
       - DATANUCLEUS_AUTO_CREATE_TABLES=true
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
 
   spark-user:
     build:
@@ -72,6 +78,8 @@ services:
     platform: linux/amd64
     environment:
       - SPARK_MASTER_URL=spark://spark-master:7077
+      - REDIS_HOST=redis
+      - REDIS_PORT=6379
     command: /bin/bash -c "tail -f /dev/null"
     depends_on:
       - spark-master
@@ -92,3 +100,12 @@ services:
       - POSTGRES_DB=hive
     volumes:
       - ./cdr/cdm/jupyter/cdm-postgres:/var/lib/postgresql/data  # For local development only. In Rancher development, PostgreSQL data shouldn't be stored in a shared mount.
+
+  redis:
+    image: redis:8.0.1
+    ports:
+      - "6379:6379"
+    volumes:
+      - ./cdr/cdm/jupyter/cdm-redis:/data
+    command: redis-server --appendonly yes
+    

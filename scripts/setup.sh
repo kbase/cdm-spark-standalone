@@ -9,6 +9,16 @@ if [ -z "$SPARK_CONF_FILE" ]; then
     exit 1
 fi
 
+# Require REDIS_HOST and REDIS_PORT to be set
+if [ -z "$REDIS_HOST" ]; then
+    echo "Error: REDIS_HOST environment variable must be set" >&2
+    exit 1
+fi
+if [ -z "$REDIS_PORT" ]; then
+    echo "Error: REDIS_PORT environment variable must be set" >&2
+    exit 1
+fi
+
 # Set Spark configurations
 
 # Set default values if not provided by the environment
@@ -52,6 +62,10 @@ fi
     if [ -n "$SPARK_DRIVER_HOST" ]; then
         echo "spark.driver.host $SPARK_DRIVER_HOST"
     fi
+    
+    # Redis configuration for caching
+    echo "spark.redis.host ${REDIS_HOST}"
+    echo "spark.redis.port ${REDIS_PORT}"
 } >> "$SPARK_CONF_FILE"
 
 # Config hive-site.xml for Hive support

@@ -98,7 +98,7 @@ in the output.
 
 3. Run the example:
    ```bash
-   spark-submit redis_example.py
+   bin/spark-submit redis_example.py
    ```
 
 ### Verifying Cache in Redis

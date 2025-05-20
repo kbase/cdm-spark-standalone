@@ -103,7 +103,7 @@ in the output.
 
 ### Verifying Cache in Redis
 
-1. Connect to the Redis container:
+1. Start a shell in the Redis container:
    ```bash
    docker compose exec -it redis bash
    ```

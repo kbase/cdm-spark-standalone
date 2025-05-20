@@ -47,7 +47,7 @@ in the output.
 
 ## Using Redis for Caching
 
-1. Connect to the spark-user container:
+1. Start a shell in the spark-user container:
    ```bash
    docker compose exec -it spark-user bash
    ```

@@ -27,7 +27,7 @@ Apache Spark in a standalone mode using Docker.
 
 To test the cluster is working:
 
-1. Connect to the spark-user container:
+1. Start a shell in the spark-user container:
     ```bash
     docker compose exec -it spark-user bash
     ```

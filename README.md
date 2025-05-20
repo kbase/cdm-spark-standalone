@@ -52,53 +52,9 @@ in the output.
    docker compose exec -it spark-user bash
    ```
 
-2. Create a Python file with the example code:
+2. Run the example:
    ```bash
-   cat > redis_example.py << 'EOF'
-   from pyspark.sql import SparkSession
-   from pyspark.sql.types import StructType, StructField, StringType, IntegerType
-
-   # Create a SparkSession with Redis configuration by default
-   spark = SparkSession.builder \
-       .appName("SparkRedisExample") \
-       .master("spark://spark-master:7077") \
-       .getOrCreate()
-
-   sc = spark.sparkContext
-   sc.setLogLevel("WARN") 
-
-   # Create example data
-   schema = StructType([
-       StructField("name", StringType(), False),
-       StructField("age", IntegerType(), False)
-   ])
-   person_data = [("John", 30), ("Peter", 45)]
-   df = spark.createDataFrame(person_data, schema=schema)
-
-   print("Original DataFrame:")
-   df.show()
-
-   # Cache data in Redis
-   print("Caching data in Redis...")
-   df.write.format("org.apache.spark.sql.redis") \
-       .option("table", "people") \
-       .mode("overwrite") \
-       .save()
-
-   # Read data from Redis cache
-   print("Reading data from Redis cache:")
-   cached_df = spark.read.format("org.apache.spark.sql.redis") \
-       .option("table", "people") \
-       .load()
-   cached_df.show()
-
-   spark.stop()
-   EOF
-   ```
-
-3. Run the example:
-   ```bash
-   bin/spark-submit redis_example.py
+   spark-submit /app/redis_container_script.py
    ```
 
 ### Verifying Cache in Redis

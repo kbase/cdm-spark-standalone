@@ -17,6 +17,9 @@ trap 'term_handler' SIGTERM
 # In bitnami/spark Dockerfile, the entrypoint is set to /opt/bitnami/scripts/spark/entrypoint.sh and followed
 # by CMD ["/opt/bitnami/scripts/spark/run.sh"] meaning that the entrypoint is expected the run.sh script as an argument.
 # reference: https://github.com/bitnami/containers/blob/main/bitnami/spark/3.5/debian-12/Dockerfile#L69
+# Run the Spark entrypoint script in the background. This allows the script to set up signal handling
+# and process management while the Spark process runs. The PID of the background process is tracked
+# to enable forwarding signals and waiting for its termination.
 /opt/bitnami/scripts/spark/entrypoint.sh "$@" /opt/bitnami/scripts/spark/run.sh &
 child=$!
 

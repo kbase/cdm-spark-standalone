@@ -36,7 +36,7 @@
   <!-- Directory location for the Hive warehouse where table data is stored -->
   <property>
     <name>hive.metastore.warehouse.dir</name>
-    <value>/cdm_shared_workspace/hive_metastore</value>
+    <value>{{DELTALAKE_WAREHOUSE_DIR}}</value>
   </property>
 
   <!-- Enable support for concurrency in Hive, allowing multiple users to access and modify the data simultaneously -->

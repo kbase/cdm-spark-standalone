@@ -26,6 +26,7 @@ fi
 : "${EXECUTOR_CORES:=2}"             # Default executor cores to 2 if not set
 : "${MAX_CORES_PER_APPLICATION:=10}" # Default maximum cores per application to 10 if not set
 : "${DATANUCLEUS_AUTO_CREATE_TABLES:=true}" # Default DataNucleus auto create tables to true if not set
+: "${DELTALAKE_WAREHOUSE_DIR:=s3a://cdm-lake/warehouse}" # Default DeltaLake warehouse directory
 
 {
     # For detailed explanations and definitions of configuration options,
@@ -76,4 +77,5 @@ sed -e "s|{{POSTGRES_URL}}|${POSTGRES_URL}|g" \
     -e "s|{{POSTGRES_USER}}|${POSTGRES_USER}|g" \
     -e "s|{{POSTGRES_PASSWORD}}|${POSTGRES_PASSWORD}|g" \
     -e "s|{{DATANUCLEUS_AUTO_CREATE_TABLES}}|${DATANUCLEUS_AUTO_CREATE_TABLES}|g" \
+    -e "s|{{DELTALAKE_WAREHOUSE_DIR}}|${DELTALAKE_WAREHOUSE_DIR}|g" \
     /opt/config/hive-site-template.xml > "$SPARK_HOME"/conf/hive-site.xml

@@ -24,7 +24,8 @@ services:
       - DATANUCLEUS_AUTO_CREATE_TABLES=true
       - REDIS_HOST=redis
       - REDIS_PORT=6379
-
+      - DELTALAKE_WAREHOUSE_DIR=s3a://cdm-lake/warehouse
+      
   spark-worker-1:
     build:
       context: .
@@ -47,6 +48,7 @@ services:
       - DATANUCLEUS_AUTO_CREATE_TABLES=true
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - DELTALAKE_WAREHOUSE_DIR=s3a://cdm-lake/warehouse
 
   spark-worker-2:
     build:
@@ -70,6 +72,7 @@ services:
       - DATANUCLEUS_AUTO_CREATE_TABLES=true
       - REDIS_HOST=redis
       - REDIS_PORT=6379
+      - DELTALAKE_WAREHOUSE_DIR=s3a://cdm-lake/warehouse
 
   spark-user:
     build:
@@ -81,6 +84,8 @@ services:
       - REDIS_HOST=redis
       - REDIS_PORT=6379
     command: /bin/bash -c "tail -f /dev/null"
+    volumes:
+      - ./scripts/redis_container_script.py:/app/redis_container_script.py
     depends_on:
       - spark-master
 

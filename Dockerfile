@@ -40,7 +40,7 @@ RUN pip3 install --upgrade pip && \
     pip3 install uv
 COPY pyproject.toml uv.lock .python-version ./
 ENV UV_PROJECT_ENVIRONMENT=/opt/bitnami/python
-RUN uv sync --locked --inexact --dev
+RUN uv sync --locked --inexact --no-dev
 
 COPY ./scripts/ /opt/scripts/
 RUN chmod a+x /opt/scripts/*.sh

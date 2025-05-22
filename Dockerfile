@@ -35,10 +35,12 @@ RUN /gradle/gradlew -p /gradle build && \
     cp -r /gradle/${GRADLE_JARS_DIR}/* /opt/bitnami/spark/jars/ && \
     rm -rf /gradle
 
-# Install pipenv and Python dependencies with cache cleanup
-RUN pip3 install --no-cache-dir pipenv
-COPY Pipfile* ./
-RUN pipenv sync --system && pipenv --clear
+# Install uv and Python dependencies
+RUN pip3 install --upgrade pip && \
+    pip3 install uv
+COPY pyproject.toml uv.lock .python-version ./
+ENV UV_PROJECT_ENVIRONMENT=/opt/bitnami/python
+RUN uv sync --locked --inexact --no-dev
 
 COPY ./scripts/ /opt/scripts/
 RUN chmod a+x /opt/scripts/*.sh

@@ -17,6 +17,7 @@ RUN apt-get update && apt-get install -y \
     iputils-ping dnsutils netcat-openbsd \
     # Redis client for interacting with Redis server
     redis-tools \
+    tini \
     && rm -rf /var/lib/apt/lists/*
 
 ENV HADOOP_AWS_VER=3.3.4
@@ -50,4 +51,4 @@ RUN chown -R spark_user:spark /opt/scripts /opt/config
 # Switch back to non-root user
 USER spark_user
 
-ENTRYPOINT ["/opt/scripts/entrypoint.sh"]
+ENTRYPOINT ["tini", "--", "/opt/scripts/entrypoint.sh"]

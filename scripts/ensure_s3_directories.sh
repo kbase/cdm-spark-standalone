@@ -18,17 +18,13 @@ export MC_CONFIG_DIR="/tmp/.mc"
 mkdir -p "$MC_CONFIG_DIR"
 
 if [ -z "$SPARK_JOB_LOG_DIR_CATEGORY" ]; then
-    echo "SPARK_JOB_LOG_DIR_CATEGORY not set, using SPARK_JOB_LOG_DIR as FULL_S3_PATH"
+    echo "SPARK_JOB_LOG_DIR_CATEGORY not set"
     FULL_S3_PATH="$SPARK_JOB_LOG_DIR"
+    SPARK_JOB_LOG_DIR_CATEGORY="default"
 else
     FULL_S3_PATH="${SPARK_JOB_LOG_DIR}/${SPARK_JOB_LOG_DIR_CATEGORY}"
 fi
 S3_URL_WITHOUT_PROTOCOL=${FULL_S3_PATH#s3a://}
-
-if [ -z "$SPARK_JOB_LOG_DIR_CATEGORY" ]; then
-    echo "SPARK_JOB_LOG_DIR_CATEGORY not set, using default value 'default_category'"
-    SPARK_JOB_LOG_DIR_CATEGORY="default_category"
-fi
 ALIAS_NAME="minio_${SPARK_JOB_LOG_DIR_CATEGORY}"
 
 echo "Using alias: $ALIAS_NAME for S3 path: $S3_URL_WITHOUT_PROTOCOL"

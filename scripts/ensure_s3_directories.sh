@@ -20,6 +20,7 @@ mkdir -p "$MC_CONFIG_DIR"
 if [ -z "$SPARK_JOB_LOG_DIR_CATEGORY" ]; then
     echo "SPARK_JOB_LOG_DIR_CATEGORY not set"
     FULL_S3_PATH="$SPARK_JOB_LOG_DIR"
+    # Used for minIO alias name and not used for bucket and path
     SPARK_JOB_LOG_DIR_CATEGORY="default"
 else
     FULL_S3_PATH="${SPARK_JOB_LOG_DIR}/${SPARK_JOB_LOG_DIR_CATEGORY}"

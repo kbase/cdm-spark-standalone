@@ -83,6 +83,16 @@ fi
 
     # Event logging for Spark UI history
     if [ -n "$SPARK_JOB_LOG_DIR" ]; then
+        # Ensure existence of the directory
+        /opt/scripts/ensure_s3_directories.sh >&2
+
+        # Build the full S3 path with category if provided
+        if [ -n "$SPARK_JOB_LOG_DIR_CATEGORY" ]; then
+            FULL_SPARK_LOG_PATH="${SPARK_JOB_LOG_DIR}/${SPARK_JOB_LOG_DIR_CATEGORY}"
+        else
+            FULL_SPARK_LOG_PATH="${SPARK_JOB_LOG_DIR}"
+        fi
+
         # S3/MinIO configuration for event logging and Delta Lake
         # Note: This setting is likely to be overridden by the Spark driver configuration. 
         # Ensure that the minIO user configured in the Spark driver has the correct permissions to access the bucket.
@@ -93,11 +103,11 @@ fi
         echo "spark.hadoop.fs.s3a.impl org.apache.hadoop.fs.s3a.S3AFileSystem"
 
         echo "spark.eventLog.enabled true"
-        echo "spark.eventLog.dir ${SPARK_JOB_LOG_DIR}"
-        echo "Event logging enabled with directory: ${SPARK_JOB_LOG_DIR}" >&2
+        echo "spark.eventLog.dir ${FULL_SPARK_LOG_PATH}"
+        echo "Event logging enabled with directory: ${FULL_SPARK_LOG_PATH}" >&2
     else
         echo "spark.eventLog.enabled false"
-        echo "Event logging disabled (SPARK_EVENT_LOG_DIR not set)" >&2
+        echo "Event logging disabled (SPARK_JOB_LOG_DIR not set)" >&2
     fi
 
 } >> "$SPARK_CONF_FILE"

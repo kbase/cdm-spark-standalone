@@ -25,7 +25,7 @@ fi
 : "${MAX_EXECUTORS:=5}"              # Default dynamic allocation executors to 5 if not set
 : "${EXECUTOR_CORES:=2}"             # Default executor cores to 2 if not set
 : "${MAX_CORES_PER_APPLICATION:=10}" # Default maximum cores per application to 10 if not set
-: "${DATANUCLEUS_AUTO_CREATE_TABLES:=true}" # Default DataNucleus auto create tables to true if not set
+: "${DATANUCLEUS_AUTO_CREATE_TABLES:=false}" # Default DataNucleus auto create tables to false if not set
 : "${DELTALAKE_WAREHOUSE_DIR:=s3a://cdm-lake/warehouse}" # Default DeltaLake warehouse directory
 
 {
@@ -69,6 +69,37 @@ fi
         echo "spark.redis.host ${REDIS_HOST}"
         echo "spark.redis.port ${REDIS_PORT}"
     fi
+
+    # Broadcast join configurations
+    echo "spark.sql.autoBroadcastJoinThreshold 52428800" # 50MB (default is 10MB)
+
+    # Shuffle and compression configurations
+    echo "spark.reducer.maxSizeInFlight 96m" # 96MB (default is 48MB)
+    echo "spark.shuffle.file.buffer 1m" # 1MB (default is 32KB)
+
+    # Delta Lake optimizations
+    echo "spark.databricks.delta.optimizeWrite.enabled true"
+    echo "spark.databricks.delta.autoCompact.enabled true"
+
+    # Event logging for Spark UI history
+    if [ -n "$SPARK_EVENT_LOG_DIR" ]; then
+        # S3/MinIO configuration for event logging and Delta Lake
+        # Note: This setting is likely to be overridden by the Spark driver configuration. 
+        # Ensure that the minIO user configured in the Spark driver has the correct permissions to access the bucket.
+        echo "spark.hadoop.fs.s3a.endpoint ${MINIO_URL}"
+        echo "spark.hadoop.fs.s3a.access.key ${MINIO_LOG_USER_ACCESS_KEY}"
+        echo "spark.hadoop.fs.s3a.secret.key ${MINIO_LOG_USER_SECRET_KEY}"
+        echo "spark.hadoop.fs.s3a.path.style.access true"
+        echo "spark.hadoop.fs.s3a.impl org.apache.hadoop.fs.s3a.S3AFileSystem"
+        
+        echo "spark.eventLog.enabled true"
+        echo "spark.eventLog.dir ${SPARK_EVENT_LOG_DIR}"
+        echo "Event logging enabled with directory: ${SPARK_EVENT_LOG_DIR}" >&2
+    else
+        echo "spark.eventLog.enabled false"
+        echo "Event logging disabled (SPARK_EVENT_LOG_DIR not set)" >&2
+    fi
+
 } >> "$SPARK_CONF_FILE"
 
 # Config hive-site.xml for Hive support

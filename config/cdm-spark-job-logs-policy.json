@@ -11,8 +11,8 @@
         "s3:DeleteObject"
       ],
       "Resource": [
-        "arn:aws:s3:::cdm-spark-events",
-        "arn:aws:s3:::cdm-spark-events/*"
+        "arn:aws:s3:::cdm-spark-job-logs",
+        "arn:aws:s3:::cdm-spark-job-logs/*"
       ]
     }
   ]

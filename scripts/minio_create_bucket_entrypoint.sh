@@ -9,29 +9,29 @@ else
   echo 'bucket cdm-lake already exists'
 fi
 
-# make spark events bucket
-if ! mc ls minio/cdm-spark-events 2>/dev/null; then
-  mc mb minio/cdm-spark-events && echo 'Bucket cdm-spark-events created'
+# make spark job logs bucket
+if ! mc ls minio/cdm-spark-job-logs 2>/dev/null; then
+  mc mb minio/cdm-spark-job-logs && echo 'Bucket cdm-spark-job-logs created'
 else
-  echo 'bucket cdm-spark-events already exists'
+  echo 'bucket cdm-spark-job-logs already exists'
 fi
 
-# create spark-events directory inside the bucket
+# create spark-job-logs directory inside the bucket
 # Create a dummy file to ensure the directory exists, then remove it
-echo "dummy" | mc pipe minio/cdm-spark-events/spark-events/.dummy
-echo 'spark-events directory created in cdm-spark-events bucket'
+echo "dummy" | mc pipe minio/cdm-spark-job-logs/spark-job-logs/.dummy
+echo 'spark-job-logs directory created in cdm-spark-job-logs bucket'
 
 # create policies
 mc admin policy create minio cdm-read-write-policy /config/cdm-read-write-policy.json
-mc admin policy create minio cdm-spark-events-policy /config/cdm-spark-events-policy.json
+mc admin policy create minio cdm-spark-job-logs-policy /config/cdm-spark-job-logs-policy.json
 
 # make read/write user
 mc admin user add minio minio-readwrite minio123
 mc admin policy attach minio cdm-read-write-policy --user=minio-readwrite
-mc admin policy attach minio cdm-spark-events-policy --user=minio-readwrite
+mc admin policy attach minio cdm-spark-job-logs-policy --user=minio-readwrite
 echo 'CDM read-write user and policy set'
 
 # make spark events log access user
 mc admin user add minio minio-log-access minio123
-mc admin policy attach minio cdm-spark-events-policy --user=minio-log-access
+mc admin policy attach minio cdm-spark-job-logs-policy --user=minio-log-access
 echo 'Spark events log access user and policy set'

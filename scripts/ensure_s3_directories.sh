@@ -24,10 +24,10 @@ if [ -z "$SPARK_JOB_LOG_DIR_CATEGORY" ]; then
 else
     FULL_S3_PATH="${SPARK_JOB_LOG_DIR}/${SPARK_JOB_LOG_DIR_CATEGORY}"
 fi
-S3_URL_WITHOUT_PROTOCOL=${FULL_S3_PATH#s3a://}
+BUCKET_AND_PATH=${FULL_S3_PATH#s3a://}
 ALIAS_NAME="minio_${SPARK_JOB_LOG_DIR_CATEGORY}"
 
-echo "Using alias: $ALIAS_NAME for S3 path: $S3_URL_WITHOUT_PROTOCOL"
+echo "Using alias: $ALIAS_NAME for S3 path: $BUCKET_AND_PATH"
 
 # Check if alias already exists, create if it doesn't
 if ! mc alias list | grep -q "^${ALIAS_NAME}"; then
@@ -38,9 +38,9 @@ else
 fi
 
 # Ensure the directory path exists by creating a dummy file
-echo "dummy" | mc pipe $ALIAS_NAME/$S3_URL_WITHOUT_PROTOCOL/.dummy
+echo "dummy" | mc pipe $ALIAS_NAME/$BUCKET_AND_PATH/.dummy
 
-echo "Directory structure ensured for: $S3_URL_WITHOUT_PROTOCOL"
+echo "Directory structure ensured for: $BUCKET_AND_PATH"
 
 mc alias rm $ALIAS_NAME
 

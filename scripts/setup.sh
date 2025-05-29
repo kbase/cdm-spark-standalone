@@ -82,7 +82,7 @@ fi
     echo "spark.databricks.delta.autoCompact.enabled true"
 
     # Event logging for Spark UI history
-    if [ -n "$SPARK_EVENT_LOG_DIR" ]; then
+    if [ -n "$SPARK_JOB_LOG_DIR" ]; then
         # S3/MinIO configuration for event logging and Delta Lake
         # Note: This setting is likely to be overridden by the Spark driver configuration. 
         # Ensure that the minIO user configured in the Spark driver has the correct permissions to access the bucket.
@@ -91,10 +91,10 @@ fi
         echo "spark.hadoop.fs.s3a.secret.key ${MINIO_LOG_USER_SECRET_KEY}"
         echo "spark.hadoop.fs.s3a.path.style.access true"
         echo "spark.hadoop.fs.s3a.impl org.apache.hadoop.fs.s3a.S3AFileSystem"
-        
+
         echo "spark.eventLog.enabled true"
-        echo "spark.eventLog.dir ${SPARK_EVENT_LOG_DIR}"
-        echo "Event logging enabled with directory: ${SPARK_EVENT_LOG_DIR}" >&2
+        echo "spark.eventLog.dir ${SPARK_JOB_LOG_DIR}"
+        echo "Event logging enabled with directory: ${SPARK_JOB_LOG_DIR}" >&2
     else
         echo "spark.eventLog.enabled false"
         echo "Event logging disabled (SPARK_EVENT_LOG_DIR not set)" >&2

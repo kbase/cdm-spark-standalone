@@ -19,7 +19,6 @@ fi
 # create spark-events directory inside the bucket
 # Create a dummy file to ensure the directory exists, then remove it
 echo "dummy" | mc pipe minio/cdm-spark-events/spark-events/.dummy
-# mc rm minio/cdm-spark-events/spark-events/.dummy
 echo 'spark-events directory created in cdm-spark-events bucket'
 
 # create policies

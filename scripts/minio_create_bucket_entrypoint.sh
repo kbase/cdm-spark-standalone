@@ -28,7 +28,7 @@ mc admin policy create minio cdm-spark-events-policy /config/cdm-spark-events-po
 # make read/write user
 mc admin user add minio minio-readwrite minio123
 mc admin policy attach minio cdm-read-write-policy --user=minio-readwrite
-mc admin policy attach minio cdm-spark-events-policy --user=minio-log-access
+mc admin policy attach minio cdm-spark-events-policy --user=minio-readwrite
 echo 'CDM read-write user and policy set'
 
 # make spark events log access user

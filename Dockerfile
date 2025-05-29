@@ -17,8 +17,17 @@ RUN apt-get update && apt-get install -y \
     iputils-ping dnsutils netcat-openbsd \
     # Redis client for interacting with Redis server
     redis-tools \
+    wget curl \
     tini \
     && rm -rf /var/lib/apt/lists/*
+
+# Install MinIO client
+ENV MC_VER=2025-05-21T01-59-54Z
+RUN echo "Installing MinIO client..." \
+    && wget -q https://dl.min.io/client/mc/release/linux-amd64/archive/mc.RELEASE.${MC_VER} -O /usr/local/bin/mc \
+    && chmod +x /usr/local/bin/mc \
+    && mc --version \
+    && echo "MinIO client installed successfully"
 
 ENV HADOOP_AWS_VER=3.3.4
 # NOTE: ensure Delta Spark jar version matches python pip delta-spark version specified in the Pipfile

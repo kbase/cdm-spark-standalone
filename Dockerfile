@@ -1,4 +1,4 @@
-FROM bitnami/spark:3.5.6
+FROM bitnami/spark:4.0.0
 
 # Switch to root to install packages
 # https://github.com/bitnami/containers/tree/main/bitnami/spark#installing-additional-jars
